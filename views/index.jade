@@ -1,0 +1,18 @@
+extends layout
+
+block content
+  div#lightbox
+    div#login
+      img(src='img/login.png', width='200')
+      form#loginform(method='post')
+        input#nickinput(type='text', placeholder='Nickname', autocomplete='off', autofocus)
+  div#container
+    div#main
+      div#chatlog
+      div#inputarea
+        div.head(style='background-image: url("img/jxcode_avatar.png");')
+        div.nick#me
+        div.bar
+          form#chatform(method='post')
+            input#inputbar(type='text', autocomplete='off', placeholder='input something...')
+    div#online
