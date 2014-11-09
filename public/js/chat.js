@@ -5,6 +5,9 @@ var online = [];
 
 $(function() {
   $('#chatform').submit(function(){
+    $('#inputbar').val().replace(/ /g, '');
+    if ($('#inputbar').val() == "")
+      return false;
     addmsg(mynick, $('#inputbar').val());
     var msg = {
       nick: mynick,
