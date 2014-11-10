@@ -6,15 +6,15 @@ var online = [];
 $(function() {
   $('#chatform').submit(function(){
     $('#inputbar').val().replace(/ /g, '');
-    if ($('#inputbar').val() == "")
-      return false;
-    addmsg(mynick, $('#inputbar').val());
+    var content = func($('#inputbar').val());
+    $('#inputbar').val('');
+    if (content == "") return false;
+    addmsg(mynick, content);
     var msg = {
       nick: mynick,
-      msg: $('#inputbar').val()
+      msg: content
     };
     socket.emit('all', JSON.stringify(msg));
-    $('#inputbar').val('');
     return false;
   });
 
@@ -27,6 +27,18 @@ $(function() {
     return false;
   });
 });
+
+function func(cmd) {
+  switch(cmd) {
+    case '/clear':
+      $('#chatlog').html('');
+      return "";
+    case '/who':
+      console.log('get online');
+      return "";
+  }
+  return cmd;
+}
 
 function newline(line) {
   $('#chatlog').append(line);
@@ -72,6 +84,7 @@ socket.on('loginok', function(msg) {
     var l = JSON.parse(pack.chatlog[m]);
     addmsg(l.nick, l.msg);
   }
+  $('#inputbar').focus();
 });
 
 socket.on('loginfail', function(msg) {
