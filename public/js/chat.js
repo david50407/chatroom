@@ -48,6 +48,7 @@ function newline(line) {
 
 function addmsg(user, msg) {
   msg = msg.replace(/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=)?([^<]+)/g, '<center><iframe width="640" height="360" src="http://www.youtube.com/embed/$1?modestbranding=1&rel=0&wmode=transparent&theme=light&color=white" frameborder="0" allowfullscreen></iframe></center>').replace(/(?:http:\/\/)?(?:www\.)?(?:vimeo\.com)\/([^<]+)/g, '<center><iframe src="//player.vimeo.com/video/$1" width="640" height="360" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></center>').replace(/(?:http:\/\/)?(?:dailymotion\.com|dai\.ly)\/([^<]+)/g, '<center><iframe frameborder="0" width="560" height="315" src="http://www.dailymotion.com/embed/video/$1?logo=0&foreground=ffffff&highlight=1bb4c6&background=000000" allowfullscreen></iframe></center>');
+  msg = msg.replace(/(^https?.+\.(jpg|png|gif|bmp|webp|svg))/, "<img src='\$1'>");
   var newmsg = $('<div class="line">'
       + '<span class="nick">' + user + '</span>'
       + ': '
