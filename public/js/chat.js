@@ -54,7 +54,7 @@ function newline(line) {
   objDiv.scrollTop = objDiv.scrollHeight;
 }
 
-function addmsg(user, msg) {
+function addmsg(user, msg, notify) {
   msg = msg.replace(/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=)?([^<]+)/g, '<center><iframe width="640" height="360" src="http://www.youtube.com/embed/$1?modestbranding=1&rel=0&wmode=transparent&theme=light&color=white" frameborder="0" allowfullscreen></iframe></center>').replace(/(?:http:\/\/)?(?:www\.)?(?:vimeo\.com)\/([^<]+)/g, '<center><iframe src="//player.vimeo.com/video/$1" width="640" height="360" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></center>').replace(/(?:http:\/\/)?(?:dailymotion\.com|dai\.ly)\/([^<]+)/g, '<center><iframe frameborder="0" width="560" height="315" src="http://www.dailymotion.com/embed/video/$1?logo=0&foreground=ffffff&highlight=1bb4c6&background=000000" allowfullscreen></iframe></center>');
   msg = msg.replace(/(^https?.+\.(jpg|png|gif|bmp|webp|svg))/, "<img src='\$1'>");
   var newmsg = $('<div class="line">'
@@ -63,9 +63,12 @@ function addmsg(user, msg) {
       + '<span class="msg">' + msg + '</span>'
       +'</div>');
   newline(newmsg);
+  if (notify == true) {
+    showNotify(user, msg);
+  }
 }
 
-function newGuy(nick) {
+function newGuy(nick, notify) {
   var element = $('<div class="userline">'
        + '<div class="head" style="background-image: url(img/jxcode_avatar.png)"></div>'
        + '<div class="user">'
@@ -74,11 +77,27 @@ function newGuy(nick) {
        + '</div>');
   online[nick] = element;
   $('#online').append(element);
+  if (notify == true) {
+    showNotify("System", nick + " joined!");
+  }
 }
 
 function delGuy(nick) {
   online[nick].remove();
   delete online[nick];
+  if (notify == true) {
+    showNotify("System", nick + "leaved :(");
+  }
+}
+
+function showNotify(title, msg) {
+  if (Notify.needsPermission()) {
+    Notify.requestPermission(null, null);
+  }
+	if (typeof(title) == "undefined" || title == null || title == "") {
+		title = " ";
+	}
+  (new Notify(title, { body: msg, tag: "notify" })).show();
 }
 
 socket.on('loginok', function(msg) {
@@ -108,7 +127,7 @@ socket.on('hi', function(msg) {
   if (auth) {
     var line = $('<div class="line"># Server: ' + msg + ' joined.</div>');
     newline(line);
-    newGuy(msg);
+    newGuy(msg, true);
   }
 });
 
@@ -116,13 +135,13 @@ socket.on('bye', function(msg) {
   if (auth) {
     var line = $('<div class="line"># Server: ' + msg + ' has left.</div>');
     newline(line);
-    delGuy(msg);
+    delGuy(msg, true);
   }
 });
 
 socket.on('say', function(msg){
   if (auth) {
     var m = JSON.parse(msg);
-    addmsg(m.nick, m.msg);
+    addmsg(m.nick, m.msg, true);
   }
 });
