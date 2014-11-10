@@ -30,8 +30,16 @@ $(function() {
 
 function func(cmd) {
   switch(cmd) {
-    case '/clear':
+    case '/clearall':
       $('#chatlog').html('');
+      return "";
+    case '/clear':
+      var lines = $('#chatlog').find('.line');
+      console.log(lines.length);
+      for (var i=0;i<lines.length-15;i++) {
+        console.log(i);
+         lines.eq(i).remove();
+      }
       return "";
     case '/who':
       console.log('get online');
